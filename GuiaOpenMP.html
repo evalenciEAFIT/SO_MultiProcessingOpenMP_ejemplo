@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de OpenMP: Comandos y Usos</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1, h2 { color: #2c3e50; }
+        code { background-color: #f4f4f4; padding: 2px 5px; border-radius: 3px; }
+        pre { background-color: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        .command { margin-bottom: 20px; }
+        .example { background-color: #e8f4f8; padding: 10px; border-left: 5px solid #3498db; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Guía de OpenMP: Comandos y Usos</h1>
+
+    <h2>¿Qué es OpenMP?</h2>
+    <p>OpenMP (Open Multi-Processing) es una API que soporta la programación multiproceso de memoria compartida en múltiples plataformas. Permite añadir concurrencia a programas escritos en C, C++ y Fortran de manera sencilla y portable.</p>
+
+    <h2>Contexto y Usos de OpenMP</h2>
+    <p>OpenMP se utiliza principalmente en situaciones donde se requiere paralelismo de datos o de tareas en sistemas de memoria compartida. Algunos contextos comunes incluyen:</p>
+    <ul>
+        <li>Computación científica y simulaciones</li>
+        <li>Procesamiento de imágenes y video</li>
+        <li>Análisis de datos a gran escala</li>
+        <li>Algoritmos de búsqueda y ordenamiento</li>
+        <li>Operaciones matriciales y vectoriales</li>
+    </ul>
+
+    <h2>Comandos Más Usados en OpenMP</h2>
+
+    <div class="command">
+        <h3>1. Directiva Parallel</h3>
+        <p>Crea un equipo de hilos para ejecutar un bloque de código en paralelo.</p>
+        <pre><code>#pragma omp parallel
+{
+    // Código ejecutado por múltiples hilos
+}</code></pre>
+        <div class="example">
+            <strong>Ejemplo:</strong>
+            <pre><code>#pragma omp parallel
+{
+    printf("Hola desde el hilo %d\n", omp_get_thread_num());
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="command">
+        <h3>2. Directiva For</h3>
+        <p>Distribuye las iteraciones de un bucle entre los hilos disponibles.</p>
+        <pre><code>#pragma omp parallel for
+for (int i = 0; i < n; i++) {
+    // Iteraciones ejecutadas en paralelo
+}</code></pre>
+        <div class="example">
+            <strong>Ejemplo:</strong>
+            <pre><code>#pragma omp parallel for
+for (int i = 0; i < 1000; i++) {
+    result[i] = heavy_computation(i);
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="command">
+        <h3>3. Cláusula Private</h3>
+        <p>Declara variables como privadas para cada hilo.</p>
+        <pre><code>#pragma omp parallel for private(x)
+for (int i = 0; i < n; i++) {
+    // x es privada para cada hilo
+}</code></pre>
+        <div class="example">
+            <strong>Ejemplo:</strong>
+            <pre><code>int sum = 0;
+#pragma omp parallel for private(temp)
+for (int i = 0; i < n; i++) {
+    int temp = array[i] * 2;
+    #pragma omp critical
+    sum += temp;
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="command">
+        <h3>4. Cláusula Reduction</h3>
+        <p>Combina valores de variables privadas en una única variable compartida.</p>
+        <pre><code>#pragma omp parallel for reduction(+:sum)
+for (int i = 0; i < n; i++) {
+    sum += array[i];
+}</code></pre>
+        <div class="example">
+            <strong>Ejemplo:</strong>
+            <pre><code>int max_val = 0;
+#pragma omp parallel for reduction(max:max_val)
+for (int i = 0; i < n; i++) {
+    if (array[i] > max_val) max_val = array[i];
+}</code></pre>
+        </div>
+    </div>
+
+    <div class="command">
+        <h3>5. Directiva Critical</h3>
+        <p>Define una sección crítica que solo puede ser ejecutada por un hilo a la vez.</p>
+        <pre><code>#pragma omp critical
+{
+    // Código ejecutado por un solo hilo a la vez
+}</code></pre>
+        <div class="example">
+            <strong>Ejemplo:</strong>
+            <pre><code>#pragma omp parallel
+{
+    #pragma omp critical
+    {
+        shared_resource++;
+        printf("Recurso actualizado por el hilo %d\n", omp_get_thread_num());
+    }
+}</code></pre>
+        </div>
+    </div>
+
+    <h2>Conclusión</h2>
+    <p>OpenMP proporciona una forma sencilla y eficaz de paralelizar código en sistemas de memoria compartida. Su uso adecuado puede llevar a mejoras significativas en el rendimiento de aplicaciones que manejan grandes cantidades de datos o cálculos intensivos. Sin embargo, es importante entender los conceptos de paralelismo y las características específicas de OpenMP para utilizarlo de manera efectiva y evitar problemas como condiciones de carrera o sobrecarga excesiva.</p>
+</body>
+</html>
